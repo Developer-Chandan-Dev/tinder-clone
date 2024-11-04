@@ -54,7 +54,7 @@ This is a Tinder clone built using the MERN stack. The application allows users 
 2. Create a .env file in the backend directory and add the following environment variables:
 
    ```base
-   PORT = 5000
+   PORT = <your_port_number>
    MONGODB_URI =<your_mongo_db_connection_string>
    JWT_SECRET =<your_jwt_secret>
    NODE_ENV =development
@@ -71,14 +71,13 @@ This is a Tinder clone built using the MERN stack. The application allows users 
    npm run dev
    ```
 
-Usage
-Sign Up/Login: Create an account or log in to an existing one.
+### Usage
 
-Update Profile: Fill in profile details to be visible to other users.
+- **Sign UP/Login**: Create an account or log in to an existing one.
+- **Update Profile**: Fill in profile details to be visible to other users.
+- **Swipe**: Like or dislike other users..
+- **Chat**: Start a conversation if there's a mutual like.
 
-Swipe: Like or dislike other users.
-
-Chat: Start a conversation if there's a mutual like.
 
 Contributing
 Feel free to fork this repository, create a new branch, and submit a pull request with your enhancements or bug fixes.
