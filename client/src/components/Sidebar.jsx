@@ -2,6 +2,7 @@ import { Heart, Loader, MessageCircle, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMatchStore } from "../store/useMatchStore";
+import { useUserStore } from "../store/useUserStore";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,7 +10,9 @@ const Sidebar = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   const { getMyMatches, matches, loading } = useMatchStore();
-  console.log(matches, loading);
+  const { onlineUsers } = useUserStore();
+  console.log(onlineUsers, matches);
+
   useEffect(() => {
     getMyMatches();
   }, [getMyMatches]);
@@ -42,7 +45,7 @@ const Sidebar = () => {
               Array.isArray(matches) &&
               matches.map((match) => (
                 <Link key={match._id} to={`/chat/${match._id}`}>
-                  <div className="flex items-center mb-4 cursor-pointer hover:bg-pink-50 p-2 rounded-lg transition-colors duration-300">
+                  <div className="flex items-center mb-4 cursor-pointer hover:bg-pink-50 p-2 rounded-lg transition-colors duration-300 relative">
                     <img
                       src={match.image || "/avatar.png"}
                       alt="User image"
@@ -51,6 +54,7 @@ const Sidebar = () => {
                     <h3 className="font-semibold text-gray-800">
                       {match.name}
                     </h3>
+                    <span className={`w-3 h-3 rounded-full ${onlineUsers.includes(match._id) ? "bg-pink-500" :''}  absolute right-5`}></span>
                   </div>
                 </Link>
               ))

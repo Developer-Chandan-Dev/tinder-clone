@@ -6,6 +6,8 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Loader, UserX } from "lucide-react";
 import MessageInput from "../components/MessageInput";
+import { useUserStore } from "../store/useUserStore";
+import { formatToReadableTime } from "../utils/formatToReadableTime";
 
 const ChatPage = () => {
   const {
@@ -16,6 +18,7 @@ const ChatPage = () => {
   } = useMessageStore();
   const { authUser } = useAuthStore();
   const { getMyMatches, matches, loading } = useMatchStore();
+  const { onlineUsers } = useUserStore();
 
   const { id } = useParams();
 
@@ -31,7 +34,14 @@ const ChatPage = () => {
     return () => {
       unsubscribeFromNewMassages();
     };
-  }, [getMyMatches, authUser, subscribeToNewMassages, unsubscribeFromNewMassages, id, getMessages]);
+  }, [
+    getMyMatches,
+    authUser,
+    subscribeToNewMassages,
+    unsubscribeFromNewMassages,
+    id,
+    getMessages,
+  ]);
 
   if (loading) return <LoadingMessageUI />;
 
@@ -44,13 +54,23 @@ const ChatPage = () => {
       <Header />
 
       <div className="flex-grow flex flex-col p-4 md:p-6 lg:p-8 overflow-hidden max-w-4xl mx-auto w-full">
-        <div className="flex items-center mb-4 bg-white rounded-lg shadow p-3">
+        <div className="flex items-center mb-4 bg-white rounded-lg shadow p-3 relative">
           <img
             src={match.image || "/avatar.png"}
             alt="User image"
             className="w-12 h-12 object-cover rounded-full mr-3 border-2 border-pink-300"
           />
           <h2 className="text-xl font-semibold text-gray-800">{match?.name}</h2>
+          <div className="absolute right-5 flex items-center gap-x-2 text-xs">
+            <span
+              className={`w-[10px] h-[10px] rounded-full ${
+                onlineUsers.includes(match._id) ? "bg-pink-500" : "bg-slate-400"
+              }  `}
+            ></span>
+            <span>
+              {onlineUsers.includes(match._id) ? "Online" : "Offline"}
+            </span>
+          </div>
         </div>
 
         <div className="flex-grow overflow-y-auto mb-4 bg-white rounded-lg shadow p-4">
@@ -65,19 +85,23 @@ const ChatPage = () => {
             messages.map((msg) => (
               <div
                 key={msg._id}
-                className={`mb-3 ${
+                className={`mb-3 relative ${
                   msg.sender === authUser._id ? "text-right" : "text-left"
                 }`}
               >
                 <span
-                  className={`inline-block p-3 rounded-lg max-w-xs lg:max-w-md ${
+                  className={`inline-block py-2 px-3 rounded-lg max-w-xs lg:max-w-md relative ${
                     msg.sender === authUser._id
-                      ? "bg-pink-500 text-white"
+                      ? "bg-pink-500 text-white text-left"
                       : "bg-gray-200 text-gray-800"
                   }`}
                 >
                   {msg.content}
                 </span>
+                <div className="h-3 ml-2 text-[10px] relative">
+                    {/* <span className="">01:00 AM</span> */}
+                    <span className="mt-2 text-pink-500">{formatToReadableTime(msg.createdAt)}</span>
+                  </div>
               </div>
             ))
           )}

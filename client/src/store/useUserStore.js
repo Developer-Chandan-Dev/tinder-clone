@@ -5,6 +5,7 @@ import { useAuthStore } from "./useAuthStore";
 
 export const useUserStore = create((set) => ({
   loading: false,
+  onlineUsers: [],
 
   updateProfile: async (data) => {
     try {
@@ -18,4 +19,5 @@ export const useUserStore = create((set) => ({
       set({ loading: false });
     }
   },
+  setOnlineUsers: (users) => set({ onlineUsers: users }),
 }));

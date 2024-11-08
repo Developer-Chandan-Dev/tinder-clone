@@ -1,4 +1,5 @@
 import io from "socket.io-client";
+import { useUserStore } from "../store/useUserStore";
 
 const SOCKET_URL =
   import.meta.env.MODE === "development" ? "http://localhost:5000" : "/";
@@ -12,6 +13,16 @@ export const initializeSocket = (userId) => {
 
   socket = io(SOCKET_URL, {
     auth: { userId },
+  });
+
+  // socket.on() is used to listen to the events. can be used both on client and server side
+  // Listen to "getOnlineUsers" event
+  socket.on("getOnlineUsers", (users) => {
+    console.log(SOCKET_URL, userId);
+    console.log(users);
+
+    // Update Zustand state with the received users
+    useUserStore.getState().setOnlineUsers(users);
   });
 };
 
@@ -28,3 +39,5 @@ export const disconnectSocket = () => {
     socket = null;
   }
 };
+
+export const getOnlineUsers = () => {};

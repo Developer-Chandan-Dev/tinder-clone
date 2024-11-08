@@ -25,9 +25,14 @@ export const initializeSocket = (httpServer) => {
     console.log(`User connected with socket id: ${socket.id}`);
     connectedUsers.set(socket.userId, socket.id);
 
+    // console.log(Object.fromEntries(connectedUsers), '28');
+    // io.emit() is used to send events to all the connected clients
+    io.emit("getOnlineUsers", Array.from(connectedUsers.keys()));
+
     socket.on("disconnect", () => {
       console.log(`User disconnected with socket id: ${socket.id}`);
       connectedUsers.delete(socket.userId);
+      io.emit("getOnlineUsers", Array.from(connectedUsers.keys()));
     });
   });
 };
@@ -42,3 +47,4 @@ export const getIO = () => {
 export const getConnectedUsers = () => {
   return connectedUsers;
 };
+
